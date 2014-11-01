@@ -5,40 +5,56 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Find articulation points and biconnected components in a graph.
+ * Find articulation points and biconnected components in a graph. Uses an
+ * internal edge list graph representation with Vertex objects that keep track
+ * of DFS search info.
  * 
  * @author Bobby Simon
  * 
  */
 public class BiconnectedComponentFinder {
 
+	// Graph - represented by an array of edge lists
+	// Each edge list contains integers that map to
+	// to a vertex in vertices
 	static ArrayList<ArrayList<Integer>> edgeList;
 	static ArrayList<Vertex> vertices;
 	static ArrayList<String> components;
 	static HashMap<Vertex, Vertex> artPoints;
 
+	static int numEdges = 0;
+
 	static int dfscounter, compcounter, numPoints;
 	static String comp, points;
 
 	/**
+	 * 
 	 * @param args
+	 *            a single command line argument specifying the input graph file
 	 * @throws IOException
 	 * @throws NumberFormatException
 	 */
 	public static void main(String[] args) throws NumberFormatException,
 			IOException {
 
+		// read in graph into data structures - edgeList and vertices
 		processInput(args[0]);
 
+		// depth-first search counter
 		dfscounter = 0;
+		// number of biconnected components in the graph
 		compcounter = 0;
+		// number of articulation points
 		numPoints = 0;
+		// list of components to output to console
 		components = new ArrayList<String>();
+		// formatted output
 		points = "Articulation Points:";
 
 		// TIME ARTICULATION POINT FIND AND BICONNECTED COMPONENTS
 		long startTime = System.nanoTime();
 
+		// find articulation points and biconnected components
 		findArticulationPoints(vertices.get(0));
 
 		// STOP TIMER
@@ -63,6 +79,7 @@ public class BiconnectedComponentFinder {
 		v.dfsNum = ++dfscounter;
 		v.low = v.dfsNum;
 
+		// depth first search
 		int vNum = vertices.indexOf(v);
 		ArrayList<Integer> vList = edgeList.get(vNum);
 		for (int i = 0; i < vList.size(); i++) {
@@ -115,13 +132,14 @@ public class BiconnectedComponentFinder {
 
 	}
 
-	// preprocessing the input and builds adjacency list representation of the
+	// process input and build adjacency list representation of the
 	// graph
 	private static void processInput(String filename)
 			throws NumberFormatException, IOException {
 
 		BufferedReader fileIn = new BufferedReader(new FileReader(filename));
 		int numVertices = Integer.parseInt(fileIn.readLine());
+		numEdges = 0;
 
 		// initialize vertices
 		vertices = new ArrayList<Vertex>(numVertices);
@@ -135,12 +153,15 @@ public class BiconnectedComponentFinder {
 			edgeList.add(new ArrayList<Integer>());
 		}
 
+		// read edges
 		String oneLine;
 		fileIn.read();
 		while ((oneLine = fileIn.readLine()) != null) {
+
 			String[] tokens = oneLine.split(" ", 2);
 			fileIn.read();
 
+			// add edges to graph
 			addEdge(Integer.parseInt(tokens[0].trim()),
 					Integer.parseInt(tokens[1].trim()));
 			addEdge(Integer.parseInt(tokens[1].trim()),
@@ -150,9 +171,11 @@ public class BiconnectedComponentFinder {
 
 		int edges = 0;
 		for (int i = 0; i < edgeList.size(); i++) {
-			edges += edgeList.get(0).size();
+			edges += edgeList.get(i).size();
 		}
 		edges /= 2;
+
+		assert (edges * 2 == numEdges);
 
 		System.out.println("Number of Nodes: " + numVertices);
 		System.out.println("Number of Edges: " + edges);
@@ -161,6 +184,7 @@ public class BiconnectedComponentFinder {
 	// adds an edge to the adjacency list
 	private static void addEdge(int n1, int n2) {
 		edgeList.get(n1).add(n2);
+		numEdges++;
 	}
 
 }
