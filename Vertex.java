@@ -1,8 +1,6 @@
 /**
  * Represents a vertex in a graph.
  * @author Bobby Simon
- * bobbycs - 1110547
- *
  */
 public class Vertex {
 

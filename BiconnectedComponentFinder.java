@@ -7,7 +7,7 @@ import java.util.HashMap;
 /**
  * Find articulation points and biconnected components in a graph.
  * 
- * @author Bobby Simon bobbycs - 1110547
+ * @author Bobby Simon
  * 
  */
 public class BiconnectedComponentFinder {
